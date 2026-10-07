@@ -141,10 +141,124 @@ OMDb API
 MovieWeb Database
 ```
 
-### Duplicate movies
 
-MovieWeb prevents the same movie from being added multiple times to a user's collection.
+---
 
-The duplicate check is case-insensitive, so:
+## 📁 Project Structure
 
 ```text
+MovieWebApp/
+├── app.py                  # Flask application and routes
+├── data_manager.py         # Database operations
+├── models.py               # SQLAlchemy models
+├── requirements.txt        # Python dependencies
+├── .env                    # Environment variables (not committed)
+├── .gitignore
+│
+├── data/
+│   └── movies.db           # Local SQLite database (not committed)
+│
+├── static/
+│   └── style.css           # Application styling
+│
+└── templates/
+    ├── base.html
+    ├── index.html
+    ├── movies.html
+    ├── 404.html
+    └── 500.html
+```
+
+---
+
+## 🗄️ Database
+
+MovieWeb uses **SQLite** with **Flask-SQLAlchemy**.
+
+The database is created automatically when the application starts:
+
+```python
+with app.app_context():
+    db.create_all()
+```
+
+The local database file is stored at:
+
+```text
+data/movies.db
+```
+
+The `data/` directory is ignored by Git so that local database files are not committed to the repository.
+
+---
+
+## 🔌 OMDb API
+
+MovieWeb uses the **OMDb API** to retrieve movie information.
+
+When a user enters a movie title, the application sends a request to OMDb and retrieves information such as:
+
+- Movie title
+- Release year
+- Director
+- Poster
+
+The returned information is then stored in the local SQLite database.
+
+The API endpoint used by the application is:
+
+```text
+https://www.omdbapi.com/
+```
+
+---
+
+## ⚠️ Error Handling
+
+MovieWeb includes custom error pages for common server errors:
+
+- **404 — Page Not Found**
+- **500 — Internal Server Error**
+
+The application also handles common API and database errors and displays user-friendly flash messages instead of exposing technical error details.
+
+---
+
+## 🎨 Design
+
+The interface uses a modern dark theme with:
+
+- Responsive movie cards
+- Movie posters
+- User collection cards
+- Styled forms and buttons
+- Success and error notifications
+- Empty-state screens
+- Custom error pages
+- Responsive layouts for smaller screens
+
+The goal is to keep the interface simple while still making the application feel like a polished movie collection website.
+
+---
+
+## 📚 Project Context
+
+MovieWeb was built as part of a Flask and SQLAlchemy learning project.
+
+The project focuses on practicing:
+
+- Flask routing
+- Jinja2 templates
+- Forms and POST requests
+- SQLAlchemy 2.0 models
+- Database CRUD operations
+- External API integration
+- Environment variables
+- Error handling
+- Git and GitHub workflows
+
+---
+
+## 📄 License
+
+This project was created for educational purposes.
