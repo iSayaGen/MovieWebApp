@@ -1,9 +1,17 @@
+import os
 from pathlib import Path
 
+import requests
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for
 
 from data_manager import DataManager
 from models import db, Movie
+
+
+load_dotenv()
+
+OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 
 
 app = Flask(__name__)
@@ -50,12 +58,33 @@ def get_movies(user_id):
 def add_movie(user_id):
     title = request.form["title"]
 
+    response = requests.get(
+        "https://www.omdbapi.com/",
+        params={
+            "apikey": OMDB_API_KEY,
+            "t": title,
+        },
+        timeout=10,
+    )
+
+    data = response.json()
+
+    if data.get("Response") == "False":
+        return f"Movie not found: {data.get('Error', 'Unknown error')}", 404
+
+    year_text = data.get("Year", "")
+
+    try:
+        year = int(year_text[:4])
+    except (ValueError, TypeError):
+        year = 0
+
     movie = Movie(
-        name=title,
-        director="Unknown",
-        year=0,
-        poster_url="",
-        user_id=user_id
+        name=data["Title"],
+        director=data.get("Director", "Unknown"),
+        year=year,
+        poster_url=data.get("Poster", ""),
+        user_id=user_id,
     )
 
     data_manager.add_movie(movie)
