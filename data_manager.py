@@ -38,27 +38,6 @@ class DataManager:
 
         return movie
 
-    def update_movie(
-        self,
-        user_id: int,
-        movie_id: int,
-        new_title: str,
-    ) -> bool:
-        """Update a movie if it belongs to the specified user."""
-        movie = db.session.execute(
-            db.select(Movie).where(
-                Movie.id == movie_id,
-                Movie.user_id == user_id,
-            )
-        ).scalar_one_or_none()
-
-        if movie is None:
-            return False
-
-        movie.name = new_title
-        db.session.commit()
-
-        return True
 
     def delete_movie(self, user_id: int, movie_id: int) -> bool:
         """Delete a movie if it belongs to the specified user."""

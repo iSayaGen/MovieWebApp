@@ -184,38 +184,6 @@ def add_movie(user_id):
 
 
 @app.route(
-    "/users/<int:user_id>/movies/<int:movie_id>/update",
-    methods=["POST"],
-)
-def update_movie(user_id, movie_id):
-    """Update the title of a movie belonging to the current user."""
-    new_title = request.form.get("title", "").strip()
-
-    if not new_title:
-        flash("Please enter a movie title.", "error")
-        return redirect(url_for("get_movies", user_id=user_id))
-
-    try:
-        updated = data_manager.update_movie(
-            user_id,
-            movie_id,
-            new_title,
-        )
-    except SQLAlchemyError:
-        flash(
-            "We couldn't update the movie. Please try again.",
-            "error",
-        )
-        return redirect(url_for("get_movies", user_id=user_id))
-
-    if not updated:
-        abort(404)
-
-    flash("Movie updated successfully.", "success")
-    return redirect(url_for("get_movies", user_id=user_id))
-
-
-@app.route(
     "/users/<int:user_id>/movies/<int:movie_id>/delete",
     methods=["POST"],
 )

@@ -1,13 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <div class="page-header">
     <div>
         <p class="eyebrow">{{ user.name }}'s collection</p>
-
         <h1>My Movies</h1>
-
         <p class="page-description">
             Your personal movie collection.
         </p>
@@ -21,9 +18,7 @@
     </a>
 </div>
 
-
 <section class="add-movie-section">
-
     <h2>Add a Movie</h2>
 
     <form
@@ -31,7 +26,6 @@
         method="post"
         class="movie-form"
     >
-
         <div class="form-group">
             <label for="title">Movie title</label>
 
@@ -48,33 +42,22 @@
         <button type="submit" class="btn btn-primary">
             + Add Movie
         </button>
-
     </form>
-
 </section>
 
-
 <section class="movies-section">
-
     {% if movies %}
-
         <div class="movie-grid">
-
             {% for movie in movies %}
-
                 <article class="movie-card">
-
                     {% if movie.poster_url
                           and movie.poster_url != "N/A" %}
-
                         <img
                             src="{{ movie.poster_url }}"
                             alt="Poster for {{ movie.name }}"
                             class="movie-poster"
                         >
-
                     {% else %}
-
                         <div
                             class="movie-poster movie-poster-placeholder"
                             aria-label="No poster available"
@@ -82,16 +65,12 @@
                             <span>🎬</span>
                             <p>No poster available</p>
                         </div>
-
                     {% endif %}
 
-
                     <div class="movie-content">
-
                         <h2>{{ movie.name }}</h2>
 
                         <div class="movie-meta">
-
                             {% if movie.year %}
                                 <span>{{ movie.year }}</span>
                             {% endif %}
@@ -101,46 +80,9 @@
                             {% endif %}
 
                             <span>{{ movie.director }}</span>
-
                         </div>
 
-
                         <div class="movie-actions">
-
-                            <form
-                                action="{{ url_for(
-                                    'update_movie',
-                                    user_id=user_id,
-                                    movie_id=movie.id
-                                ) }}"
-                                method="post"
-                                class="update-form"
-                            >
-                                <label
-                                    for="title-{{ movie.id }}"
-                                    class="sr-only"
-                                >
-                                    New title for {{ movie.name }}
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="title-{{ movie.id }}"
-                                    name="title"
-                                    value="{{ movie.name }}"
-                                    maxlength="200"
-                                    required
-                                >
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-secondary"
-                                >
-                                    Update
-                                </button>
-                            </form>
-
-
                             <form
                                 action="{{ url_for(
                                     'delete_movie',
@@ -156,21 +98,13 @@
                                     Delete
                                 </button>
                             </form>
-
                         </div>
-
                     </div>
-
                 </article>
-
             {% endfor %}
-
         </div>
-
     {% else %}
-
         <div class="empty-state">
-
             <div class="empty-icon">🎬</div>
 
             <h2>No movies yet</h2>
@@ -179,11 +113,7 @@
                 Add your first movie above to start building
                 your collection.
             </p>
-
         </div>
-
     {% endif %}
-
 </section>
-
 {% endblock %}
