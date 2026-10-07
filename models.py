@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
+
 
 db = SQLAlchemy()
 
@@ -17,6 +19,6 @@ class Movie(db.Model):
     poster_url: Mapped[str] = mapped_column(nullable=False)
 
     user_id: Mapped[int] = mapped_column(
-        db.ForeignKey("user.id"),
-        nullable=False
+        ForeignKey("user.id"),
+        nullable=False,
     )

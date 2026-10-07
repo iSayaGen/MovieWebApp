@@ -4,30 +4,43 @@
 
 <div class="page-header">
     <div>
-        <p class="eyebrow">Your collection</p>
+        <p class="eyebrow">{{ user.name }}'s collection</p>
+
         <h1>My Movies</h1>
+
         <p class="page-description">
             Your personal movie collection.
         </p>
     </div>
 
-    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+    <a
+        href="{{ url_for('index') }}"
+        class="btn btn-secondary"
+    >
         ← Back to Users
     </a>
 </div>
 
 
 <section class="add-movie-section">
+
     <h2>Add a Movie</h2>
 
-    <form action="{{ url_for('add_movie', user_id=user_id) }}" method="post" class="movie-form">
+    <form
+        action="{{ url_for('add_movie', user_id=user_id) }}"
+        method="post"
+        class="movie-form"
+    >
+
         <div class="form-group">
             <label for="title">Movie title</label>
+
             <input
                 type="text"
                 id="title"
                 name="title"
                 placeholder="e.g. Inception"
+                maxlength="200"
                 required
             >
         </div>
@@ -35,7 +48,9 @@
         <button type="submit" class="btn btn-primary">
             + Add Movie
         </button>
+
     </form>
+
 </section>
 
 
@@ -43,93 +58,129 @@
 
     {% if movies %}
 
-    <div class="movie-grid">
+        <div class="movie-grid">
 
-        {% for movie in movies %}
+            {% for movie in movies %}
 
-        <article class="movie-card">
+                <article class="movie-card">
 
-            {% if movie.poster_url and movie.poster_url != "N/A" %}
-                <img
-                    src="{{ movie.poster_url }}"
-                    alt="Poster for {{ movie.name }}"
-                    class="movie-poster"
-                >
-            {% else %}
-                <div class="movie-poster movie-poster-placeholder">
-                    <span>🎬</span>
-                    <p>No poster available</p>
-                </div>
-            {% endif %}
+                    {% if movie.poster_url
+                          and movie.poster_url != "N/A" %}
 
-
-            <div class="movie-content">
-
-                <h2>{{ movie.name }}</h2>
-
-                <div class="movie-meta">
-                    <span>{{ movie.year }}</span>
-                    <span>•</span>
-                    <span>{{ movie.director }}</span>
-                </div>
-
-
-                <div class="movie-actions">
-
-                    <form
-                        action="{{ url_for(
-                            'update_movie',
-                            user_id=user_id,
-                            movie_id=movie.id
-                        ) }}"
-                        method="post"
-                        class="update-form"
-                    >
-                        <input
-                            type="text"
-                            name="title"
-                            value="{{ movie.name }}"
-                            required
+                        <img
+                            src="{{ movie.poster_url }}"
+                            alt="Poster for {{ movie.name }}"
+                            class="movie-poster"
                         >
 
-                        <button type="submit" class="btn btn-secondary">
-                            Update
-                        </button>
-                    </form>
+                    {% else %}
+
+                        <div
+                            class="movie-poster movie-poster-placeholder"
+                            aria-label="No poster available"
+                        >
+                            <span>🎬</span>
+                            <p>No poster available</p>
+                        </div>
+
+                    {% endif %}
 
 
-                    <form
-                        action="{{ url_for(
-                            'delete_movie',
-                            user_id=user_id,
-                            movie_id=movie.id
-                        ) }}"
-                        method="post"
-                    >
-                        <button type="submit" class="btn btn-danger">
-                            Delete
-                        </button>
-                    </form>
+                    <div class="movie-content">
 
-                </div>
+                        <h2>{{ movie.name }}</h2>
 
-            </div>
+                        <div class="movie-meta">
 
-        </article>
+                            {% if movie.year %}
+                                <span>{{ movie.year }}</span>
+                            {% endif %}
 
-        {% endfor %}
+                            {% if movie.year and movie.director %}
+                                <span>•</span>
+                            {% endif %}
 
-    </div>
+                            <span>{{ movie.director }}</span>
+
+                        </div>
+
+
+                        <div class="movie-actions">
+
+                            <form
+                                action="{{ url_for(
+                                    'update_movie',
+                                    user_id=user_id,
+                                    movie_id=movie.id
+                                ) }}"
+                                method="post"
+                                class="update-form"
+                            >
+                                <label
+                                    for="title-{{ movie.id }}"
+                                    class="sr-only"
+                                >
+                                    New title for {{ movie.name }}
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="title-{{ movie.id }}"
+                                    name="title"
+                                    value="{{ movie.name }}"
+                                    maxlength="200"
+                                    required
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-secondary"
+                                >
+                                    Update
+                                </button>
+                            </form>
+
+
+                            <form
+                                action="{{ url_for(
+                                    'delete_movie',
+                                    user_id=user_id,
+                                    movie_id=movie.id
+                                ) }}"
+                                method="post"
+                            >
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger"
+                                >
+                                    Delete
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
 
     {% else %}
 
-    <div class="empty-state">
-        <div class="empty-icon">🎬</div>
-        <h2>No movies yet</h2>
-        <p>
-            Add your first movie above to start building your collection.
-        </p>
-    </div>
+        <div class="empty-state">
+
+            <div class="empty-icon">🎬</div>
+
+            <h2>No movies yet</h2>
+
+            <p>
+                Add your first movie above to start building
+                your collection.
+            </p>
+
+        </div>
 
     {% endif %}
 
