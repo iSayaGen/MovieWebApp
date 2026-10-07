@@ -2,24 +2,72 @@
 
 {% block content %}
 
-<h1>Users</h1>
+<div class="page-header">
+    <div>
+        <p class="eyebrow">MovieWeb</p>
+        <h1>Who's watching?</h1>
+        <p class="page-description">
+            Choose a user to view their movie collection.
+        </p>
+    </div>
+</div>
 
-<ul class="user-list">
-    {% for user in users %}
-    <li class="user-entry">
-        <a href="{{ url_for('get_movies', user_id=user.id) }}" class="btn">
-            {{ user.name }}
+
+<section class="users-section">
+
+    <div class="user-grid">
+
+        {% for user in users %}
+
+        <a
+            href="{{ url_for('get_movies', user_id=user.id) }}"
+            class="user-card"
+        >
+            <div class="user-avatar">
+                {{ user.name[0]|upper }}
+            </div>
+
+            <div>
+                <h2>{{ user.name }}</h2>
+                <span>View movies →</span>
+            </div>
         </a>
-    </li>
-    {% endfor %}
-</ul>
 
-<h2>Add a new user</h2>
+        {% endfor %}
 
-<form action="{{ url_for('create_user') }}" method="post">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
-    <button type="submit">Add User</button>
-</form>
+    </div>
+
+</section>
+
+
+<section class="add-user-section">
+
+    <h2>Add a new user</h2>
+
+    <form
+        action="{{ url_for('create_user') }}"
+        method="post"
+        class="user-form"
+    >
+
+        <div class="form-group">
+            <label for="name">Name</label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="e.g. Alex"
+                required
+            >
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            + Add User
+        </button>
+
+    </form>
+
+</section>
 
 {% endblock %}

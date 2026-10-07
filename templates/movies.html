@@ -2,37 +2,137 @@
 
 {% block content %}
 
-<h1>Movies</h1>
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Your collection</p>
+        <h1>My Movies</h1>
+        <p class="page-description">
+            Your personal movie collection.
+        </p>
+    </div>
 
-<ul>
-    {% for movie in movies %}
-    <li>
-        {{ movie.name }}
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        ← Back to Users
+    </a>
+</div>
 
-        <form
-            action="{{ url_for('update_movie', user_id=movie.user_id, movie_id=movie.id) }}"
-            method="post"
-        >
-            <input type="text" name="title" value="{{ movie.name }}" required>
-            <button type="submit">Update</button>
-        </form>
 
-        <form
-            action="{{ url_for('delete_movie', user_id=movie.user_id, movie_id=movie.id) }}"
-            method="post"
-        >
-            <button type="submit">Delete</button>
-        </form>
-    </li>
-    {% endfor %}
-</ul>
+<section class="add-movie-section">
+    <h2>Add a Movie</h2>
 
-<h2>Add a Movie</h2>
+    <form action="{{ url_for('add_movie', user_id=user_id) }}" method="post" class="movie-form">
+        <div class="form-group">
+            <label for="title">Movie title</label>
+            <input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="e.g. Inception"
+                required
+            >
+        </div>
 
-<form action="{{ url_for('add_movie', user_id=user_id) }}" method="post">
-    <label for="title">Movie title:</label>
-    <input type="text" id="title" name="title" required>
-    <button type="submit">Add Movie</button>
-</form>
+        <button type="submit" class="btn btn-primary">
+            + Add Movie
+        </button>
+    </form>
+</section>
+
+
+<section class="movies-section">
+
+    {% if movies %}
+
+    <div class="movie-grid">
+
+        {% for movie in movies %}
+
+        <article class="movie-card">
+
+            {% if movie.poster_url and movie.poster_url != "N/A" %}
+                <img
+                    src="{{ movie.poster_url }}"
+                    alt="Poster for {{ movie.name }}"
+                    class="movie-poster"
+                >
+            {% else %}
+                <div class="movie-poster movie-poster-placeholder">
+                    <span>🎬</span>
+                    <p>No poster available</p>
+                </div>
+            {% endif %}
+
+
+            <div class="movie-content">
+
+                <h2>{{ movie.name }}</h2>
+
+                <div class="movie-meta">
+                    <span>{{ movie.year }}</span>
+                    <span>•</span>
+                    <span>{{ movie.director }}</span>
+                </div>
+
+
+                <div class="movie-actions">
+
+                    <form
+                        action="{{ url_for(
+                            'update_movie',
+                            user_id=user_id,
+                            movie_id=movie.id
+                        ) }}"
+                        method="post"
+                        class="update-form"
+                    >
+                        <input
+                            type="text"
+                            name="title"
+                            value="{{ movie.name }}"
+                            required
+                        >
+
+                        <button type="submit" class="btn btn-secondary">
+                            Update
+                        </button>
+                    </form>
+
+
+                    <form
+                        action="{{ url_for(
+                            'delete_movie',
+                            user_id=user_id,
+                            movie_id=movie.id
+                        ) }}"
+                        method="post"
+                    >
+                        <button type="submit" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+        <div class="empty-icon">🎬</div>
+        <h2>No movies yet</h2>
+        <p>
+            Add your first movie above to start building your collection.
+        </p>
+    </div>
+
+    {% endif %}
+
+</section>
 
 {% endblock %}

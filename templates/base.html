@@ -3,20 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>MovieWeb</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
+
 <body>
 
-    <header>
-        <nav>
-            <a href="{{ url_for('index') }}">MovieWeb</a>
-        </nav>
-    </header>
+<header class="site-header">
 
-    <main class="container">
-        {% block content %}{% endblock %}
-    </main>
+    <nav class="navbar">
+
+        <a href="{{ url_for('index') }}" class="logo">
+            <span class="logo-icon">🎬</span>
+            MovieWeb
+        </a>
+
+        <a href="{{ url_for('index') }}" class="nav-link">
+            Users
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    {% block content %}{% endblock %}
+
+</main>
 
 </body>
 </html>
