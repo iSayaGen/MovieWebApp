@@ -31,13 +31,23 @@ class DataManager:
             .order_by(Movie.name)
         ).scalars().all()
 
+    def movie_exists(self, user_id: int, movie_name: str) -> bool:
+        """Return whether a user already has a movie with this title."""
+        movie = db.session.execute(
+            db.select(Movie).where(
+                Movie.user_id == user_id,
+                Movie.name.ilike(movie_name),
+            )
+        ).scalar_one_or_none()
+
+        return movie is not None
+
     def add_movie(self, movie: Movie) -> Movie:
         """Persist a new movie."""
         db.session.add(movie)
         db.session.commit()
 
         return movie
-
 
     def delete_movie(self, user_id: int, movie_id: int) -> bool:
         """Delete a movie if it belongs to the specified user."""

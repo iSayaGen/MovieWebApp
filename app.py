@@ -100,6 +100,13 @@ def add_movie(user_id):
         flash("Please enter a movie title.", "error")
         return redirect(url_for("get_movies", user_id=user_id))
 
+    if data_manager.movie_exists(user_id, title):
+        flash(
+            f"'{title}' is already in your movie collection.",
+            "error",
+        )
+        return redirect(url_for("get_movies", user_id=user_id))
+
     if not OMDB_API_KEY:
         app.logger.error("OMDB_API_KEY is not configured.")
         flash(
@@ -122,7 +129,10 @@ def add_movie(user_id):
         data = response.json()
 
     except requests.RequestException:
-        app.logger.exception("OMDb request failed for title '%s'.", title)
+        app.logger.exception(
+            "OMDb request failed for title '%s'.",
+            title,
+        )
         flash(
             "We couldn't reach the movie service. "
             "Please try again later.",
@@ -156,7 +166,15 @@ def add_movie(user_id):
         )
         return redirect(url_for("get_movies", user_id=user_id))
 
+    if data_manager.movie_exists(user_id, movie_title):
+        flash(
+            f"'{movie_title}' is already in your movie collection.",
+            "error",
+        )
+        return redirect(url_for("get_movies", user_id=user_id))
+
     year_text = data.get("Year", "")
+
     try:
         year = int(year_text[:4])
     except (TypeError, ValueError):
