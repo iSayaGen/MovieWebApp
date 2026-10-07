@@ -25,6 +25,7 @@ MovieWeb uses the **OMDb API** to automatically retrieve movie information such 
 - Responsive, modern dark-themed interface
 - SQLite database for local persistence
 - Environment variables for API credentials
+- Detailed movie pages with extended OMDb information
 
 ---
 
@@ -141,6 +142,26 @@ OMDb API
 MovieWeb Database
 ```
 
+
+---
+
+### View movie details
+
+Clicking a movie in a user's collection opens a dedicated details page.
+
+MovieWeb uses the movie's stored IMDb ID to request additional information from OMDb, including:
+
+- Full plot
+- IMDb rating
+- Genre
+- Runtime
+- Cast
+- Writers
+- Awards
+- Country
+- Language
+- Box office information
+- Additional ratings
 
 ---
 

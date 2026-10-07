@@ -31,7 +31,24 @@ class DataManager:
             .order_by(Movie.name)
         ).scalars().all()
 
-    def movie_exists(self, user_id: int, movie_name: str) -> bool:
+    def get_movie(
+        self,
+        user_id: int,
+        movie_id: int,
+    ) -> Movie | None:
+        """Return a movie belonging to the specified user."""
+        return db.session.execute(
+            db.select(Movie).where(
+                Movie.id == movie_id,
+                Movie.user_id == user_id,
+            )
+        ).scalar_one_or_none()
+
+    def movie_exists(
+        self,
+        user_id: int,
+        movie_name: str,
+    ) -> bool:
         """Return whether a user already has a movie with this title."""
         movie = db.session.execute(
             db.select(Movie).where(
@@ -49,7 +66,11 @@ class DataManager:
 
         return movie
 
-    def delete_movie(self, user_id: int, movie_id: int) -> bool:
+    def delete_movie(
+        self,
+        user_id: int,
+        movie_id: int,
+    ) -> bool:
         """Delete a movie if it belongs to the specified user."""
         movie = db.session.execute(
             db.select(Movie).where(

@@ -61,7 +61,10 @@ def create_user():
     try:
         data_manager.create_user(name)
     except SQLAlchemyError:
-        flash("We couldn't create the user. Please try again.", "error")
+        flash(
+            "We couldn't create the user. Please try again.",
+            "error",
+        )
         return redirect(url_for("index"))
 
     flash(f"User '{name}' was created successfully.", "success")
@@ -157,9 +160,12 @@ def add_movie(user_id):
         return redirect(url_for("get_movies", user_id=user_id))
 
     movie_title = data.get("Title")
+    imdb_id = data.get("imdbID")
 
-    if not movie_title:
-        app.logger.error("OMDb response did not contain a movie title.")
+    if not movie_title or not imdb_id:
+        app.logger.error(
+            "OMDb response did not contain required movie information."
+        )
         flash(
             "The movie service returned incomplete information.",
             "error",
@@ -185,6 +191,7 @@ def add_movie(user_id):
         director=data.get("Director", "Unknown"),
         year=year,
         poster_url=data.get("Poster", ""),
+        imdb_id=imdb_id,
         user_id=user_id,
     )
 
@@ -199,6 +206,77 @@ def add_movie(user_id):
 
     flash(f"'{movie.name}' was added to your movies.", "success")
     return redirect(url_for("get_movies", user_id=user_id))
+
+
+@app.route(
+    "/users/<int:user_id>/movies/<int:movie_id>",
+    methods=["GET"],
+)
+def movie_detail(user_id, movie_id):
+    """Display detailed information for a movie."""
+    movie = data_manager.get_movie(user_id, movie_id)
+
+    if movie is None:
+        abort(404)
+
+    if not OMDB_API_KEY:
+        app.logger.error("OMDB_API_KEY is not configured.")
+        flash(
+            "The movie service is not configured. "
+            "Please try again later.",
+            "error",
+        )
+        return redirect(url_for("get_movies", user_id=user_id))
+
+    try:
+        response = requests.get(
+            OMDB_API_URL,
+            params={
+                "apikey": OMDB_API_KEY,
+                "i": movie.imdb_id,
+                "plot": "full",
+            },
+            timeout=10,
+        )
+        response.raise_for_status()
+        data = response.json()
+
+    except requests.RequestException:
+        app.logger.exception(
+            "OMDb request failed for IMDb ID '%s'.",
+            movie.imdb_id,
+        )
+        flash(
+            "We couldn't load the movie details. "
+            "Please try again later.",
+            "error",
+        )
+        return redirect(url_for("get_movies", user_id=user_id))
+
+    except ValueError:
+        app.logger.exception("OMDb returned invalid JSON.")
+        flash(
+            "The movie service returned an invalid response.",
+            "error",
+        )
+        return redirect(url_for("get_movies", user_id=user_id))
+
+    if data.get("Response") != "True":
+        flash(
+            data.get(
+                "Error",
+                "The movie details could not be found.",
+            ),
+            "error",
+        )
+        return redirect(url_for("get_movies", user_id=user_id))
+
+    return render_template(
+        "movie_detail.html",
+        movie=movie,
+        details=data,
+        user_id=user_id,
+    )
 
 
 @app.route(

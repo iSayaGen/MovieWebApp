@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="movie-detail-page">
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">{{ details.Type|title }}</p>
+            <h1>{{ details.Title }}</h1>
+            <p class="page-description">
+                Movie details from OMDb.
+            </p>
+        </div>
+
+        <a
+            href="{{ url_for(
+                'get_movies',
+                user_id=user_id
+            ) }}"
+            class="btn btn-secondary"
+        >
+            ← Back to Movies
+        </a>
+    </div>
+
+    <article class="movie-detail-card">
+        <div class="movie-detail-poster-wrapper">
+            {% if details.Poster
+                  and details.Poster != "N/A" %}
+                <img
+                    src="{{ details.Poster }}"
+                    alt="Poster for {{ details.Title }}"
+                    class="movie-detail-poster"
+                >
+            {% else %}
+                <div
+                    class="movie-detail-poster movie-poster-placeholder"
+                    aria-label="No poster available"
+                >
+                    <span>🎬</span>
+                    <p>No poster available</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="movie-detail-content">
+            <div class="movie-detail-heading">
+                <div>
+                    <h2>{{ details.Title }}</h2>
+
+                    <div class="movie-detail-meta">
+                        {% if details.Year != "N/A" %}
+                            <span>{{ details.Year }}</span>
+                        {% endif %}
+
+                        {% if details.Runtime != "N/A" %}
+                            <span>•</span>
+                            <span>{{ details.Runtime }}</span>
+                        {% endif %}
+
+                        {% if details.Rated != "N/A" %}
+                            <span>•</span>
+                            <span>{{ details.Rated }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if details.imdbRating != "N/A" %}
+                    <div class="rating-badge">
+                        <span class="rating-star">★</span>
+                        <strong>{{ details.imdbRating }}</strong>
+                        <span>/ 10</span>
+                        <small>IMDb</small>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if details.Plot != "N/A" %}
+                <section class="movie-detail-section">
+                    <h3>Overview</h3>
+                    <p class="movie-plot">
+                        {{ details.Plot }}
+                    </p>
+                </section>
+            {% endif %}
+
+            <section class="movie-detail-section">
+                <h3>Movie Information</h3>
+
+                <dl class="movie-info-grid">
+                    {% if details.Genre != "N/A" %}
+                        <div>
+                            <dt>Genre</dt>
+                            <dd>{{ details.Genre }}</dd>
+                        </div>
+                    {% endif %}
+
+                    {% if details.Director != "N/A" %}
+                        <div>
+                            <dt>Director</dt>
+                            <dd>{{ details.Director }}</dd>
+                        </div>
+                    {% endif %}
+
+                    {% if details.Writer != "N/A" %}
+                        <div>
+                            <dt>Writer</dt>
+                            <dd>{{ details.Writer }}</dd>
+                        </div>
+                    {% endif %}
+
+                    {% if details.Actors != "N/A" %}
+                        <div>
+                            <dt>Cast</dt>
+                            <dd>{{ details.Actors }}</dd>
+                        </div>
+                    {% endif %}
+
+                    {% if details.Language != "N/A" %}
+                        <div>
+                            <dt>Language</dt>
+                            <dd>{{ details.Language }}</dd>
+                        </div>
+                    {% endif %}
+
+                    {% if details.Country != "N/A" %}
+                        <div>
+                            <dt>Country</dt>
+                            <dd>{{ details.Country }}</dd>
+                        </div>
+                    {% endif %}
+
+                    {% if details.Awards != "N/A" %}
+                        <div>
+                            <dt>Awards</dt>
+                            <dd>{{ details.Awards }}</dd>
+                        </div>
+                    {% endif %}
+
+                    {% if details.BoxOffice != "N/A" %}
+                        <div>
+                            <dt>Box Office</dt>
+                            <dd>{{ details.BoxOffice }}</dd>
+                        </div>
+                    {% endif %}
+                </dl>
+            </section>
+
+            {% if details.Ratings %}
+                <section class="movie-detail-section">
+                    <h3>Ratings</h3>
+
+                    <div class="external-ratings">
+                        {% for rating in details.Ratings %}
+                            <div class="external-rating">
+                                <span>{{ rating.Source }}</span>
+                                <strong>{{ rating.Value }}</strong>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            <div class="movie-detail-actions">
+                <a
+                    href="{{ url_for(
+                        'get_movies',
+                        user_id=user_id
+                    ) }}"
+                    class="btn btn-secondary"
+                >
+                    ← Back to Collection
+                </a>
+
+                <form
+                    action="{{ url_for(
+                        'delete_movie',
+                        user_id=user_id,
+                        movie_id=movie.id
+                    ) }}"
+                    method="post"
+                >
+                    <button
+                        type="submit"
+                        class="btn btn-danger"
+                    >
+                        Delete Movie
+                    </button>
+                </form>
+            </div>
+        </div>
+    </article>
+</div>
+{% endblock %}

@@ -50,55 +50,69 @@
         <div class="movie-grid">
             {% for movie in movies %}
                 <article class="movie-card">
-                    {% if movie.poster_url
-                          and movie.poster_url != "N/A" %}
-                        <img
-                            src="{{ movie.poster_url }}"
-                            alt="Poster for {{ movie.name }}"
-                            class="movie-poster"
-                        >
-                    {% else %}
-                        <div
-                            class="movie-poster movie-poster-placeholder"
-                            aria-label="No poster available"
-                        >
-                            <span>🎬</span>
-                            <p>No poster available</p>
-                        </div>
-                    {% endif %}
-
-                    <div class="movie-content">
-                        <h2>{{ movie.name }}</h2>
-
-                        <div class="movie-meta">
-                            {% if movie.year %}
-                                <span>{{ movie.year }}</span>
-                            {% endif %}
-
-                            {% if movie.year and movie.director %}
-                                <span>•</span>
-                            {% endif %}
-
-                            <span>{{ movie.director }}</span>
-                        </div>
-
-                        <div class="movie-actions">
-                            <form
-                                action="{{ url_for(
-                                    'delete_movie',
-                                    user_id=user_id,
-                                    movie_id=movie.id
-                                ) }}"
-                                method="post"
+                    <a
+                        href="{{ url_for(
+                            'movie_detail',
+                            user_id=user_id,
+                            movie_id=movie.id
+                        ) }}"
+                        class="movie-card-link"
+                        aria-label="View details for {{ movie.name }}"
+                    >
+                        {% if movie.poster_url
+                              and movie.poster_url != "N/A" %}
+                            <img
+                                src="{{ movie.poster_url }}"
+                                alt="Poster for {{ movie.name }}"
+                                class="movie-poster"
                             >
-                                <button
-                                    type="submit"
-                                    class="btn btn-danger"
-                                >
-                                    Delete
-                                </button>
-                            </form>
+                        {% else %}
+                            <div
+                                class="movie-poster movie-poster-placeholder"
+                                aria-label="No poster available"
+                            >
+                                <span>🎬</span>
+                                <p>No poster available</p>
+                            </div>
+                        {% endif %}
+
+                        <div class="movie-content">
+                            <h2>{{ movie.name }}</h2>
+
+                            <div class="movie-meta">
+                                {% if movie.year %}
+                                    <span>{{ movie.year }}</span>
+                                {% endif %}
+
+                                {% if movie.year and movie.director %}
+                                    <span>•</span>
+                                {% endif %}
+
+                                <span>{{ movie.director }}</span>
+                            </div>
+
+                            <span class="movie-details-link">
+                                View details →
+                            </span>
                         </div>
+                    </a>
+
+                    <div class="movie-actions">
+                        <form
+                            action="{{ url_for(
+                                'delete_movie',
+                                user_id=user_id,
+                                movie_id=movie.id
+                            ) }}"
+                            method="post"
+                        >
+                            <button
+                                type="submit"
+                                class="btn btn-danger"
+                            >
+                                Delete
+                            </button>
+                        </form>
                     </div>
                 </article>
             {% endfor %}

@@ -17,6 +17,7 @@ class Movie(db.Model):
     director: Mapped[str] = mapped_column(nullable=False)
     year: Mapped[int] = mapped_column(nullable=False)
     poster_url: Mapped[str] = mapped_column(nullable=False)
+    imdb_id: Mapped[str] = mapped_column(nullable=False)
 
     user_id: Mapped[int] = mapped_column(
         ForeignKey("user.id"),
